@@ -9,7 +9,7 @@ var code = 405;
 var server = http.createServer(function(request, response) {
     if (request.method == 'POST' && request.url == '/upload') {
         var voiceRequest = app.textRequest('hello');
-        console.log(request);
+        res.json({'x':'abxd'});
         voiceRequest.on('response', function(_response) {
             response.end(JSON.stringify(_response));
         });

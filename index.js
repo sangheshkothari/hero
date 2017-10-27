@@ -1,36 +1,51 @@
-var http = require('http');
+const express = require('express')
+const bodyParser = require('body-parser')
+const app = express()
+app.use(bodyParser.json())
+app.set('port', (process.env.PORT || 5000))
 
-var apiai = require("apiai");
+const REQUIRE_AUTH = true
+const AUTH_TOKEN = 'an-example-token'
 
-var app = apiai("7301d83b3b9444e8bd4ef3ac3cf97c7b");
+app.get('/', function (req, res) {
+  res.send('Use the /webhook endpoint.')
+})
+app.get('/webhook', function (req, res) {
+  res.send('You must POST your request')
+})
 
-var code = 405;
+app.post('/webhook', function (req, res) {
+  // we expect to receive JSON data from api.ai here.
+  // the payload is stored on req.body
+  console.log(req.body)
 
-var server = http.createServer(function(request, response) {
-    if (request.method == 'POST' && request.url == '/upload') {
-        res.end({"hello":"this is a comment"});
-        voiceRequest.on('response', function(_response) {
-            response.end(JSON.stringify(_response));
-        });
-
-        voiceRequest.on('error', function(error) {
-            console.log(error);
-            response.end();
-        });
-
-        request.on('data', function(chunk) {
-            voiceRequest.write(chunk);
-        });
-
-        request.on('end', function() {
-            voiceRequest.end();
-        });
-    } else {
-        response.writeHead(code, {});
-        response.end();
+  // we have a simple authentication
+  if (REQUIRE_AUTH) {
+    if (req.headers['auth-token'] !== AUTH_TOKEN) {
+      return res.status(401).send('Unauthorized')
     }
+  }
 
-    console.log(request.headers);
-});
+  // and some validation too
+  if (!req.body || !req.body.result || !req.body.result.parameters) {
+    return res.status(400).send('Bad Request')
+  }
 
-server.listen(443);
+  // the value of Action from api.ai is stored in req.body.result.action
+  console.log('* Received action -- %s', req.body.result.action)
+
+  // parameters are stored in req.body.result.parameters
+  var userName = req.body.result.parameters['given-name']
+  var webhookReply = 'Hello ' + userName + '! Welcome from the webhook.'
+
+  // the most basic response
+  res.status(200).json({
+    source: 'webhook',
+    speech: webhookReply,
+    displayText: webhookReply
+  })
+})
+
+app.listen(app.get('port'), function () {
+  console.log('* Webhook service is listening on port:' + app.get('port'))
+})

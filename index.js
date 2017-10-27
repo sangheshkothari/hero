@@ -5,7 +5,7 @@ app.use(bodyParser.json())
 app.set('port', (process.env.PORT || 5000))
 
 const REQUIRE_AUTH = true
-const AUTH_TOKEN = 'an-example-token'
+const AUTH_TOKEN = '7301d83b3b9444e8bd4ef3ac3cf97c7b';
 
 app.get('/', function (req, res) {
   res.send('Use the /webhook endpoint.')

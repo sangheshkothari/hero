@@ -3,7 +3,7 @@ const bodyParser = require('body-parser')
 const app = express()
 app.use(bodyParser.json())
 app.set('port', (process.env.PORT || 5000))
-
+NPM_CONFIG_PRODUCTION=false;
 const REQUIRE_AUTH = true
 const AUTH_TOKEN = '7301d83b3b9444e8bd4ef3ac3cf97c7b';
 

@@ -8,8 +8,7 @@ var code = 405;
 
 var server = http.createServer(function(request, response) {
     if (request.method == 'POST' && request.url == '/upload') {
-        var voiceRequest = app.textRequest('hello');
-        res.json({'x':'abxd'});
+        res.end({"hello":"this is a comment"});
         voiceRequest.on('response', function(_response) {
             response.end(JSON.stringify(_response));
         });

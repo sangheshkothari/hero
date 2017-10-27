@@ -18,13 +18,9 @@ app.post('/webhook', function (req, res) {
   // we expect to receive JSON data from api.ai here.
   // the payload is stored on req.body
   console.log(req.body)
-
+res.status(200).send('Unauthorized');
   // we have a simple authentication
-  if (REQUIRE_AUTH) {
-    if (req.headers['auth-token'] !== AUTH_TOKEN) {
-      return res.status(401).send('Unauthorized')
-    }
-  }
+
 
   // and some validation too
   if (!req.body || !req.body.result || !req.body.result.parameters) {
